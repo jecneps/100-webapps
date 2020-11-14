@@ -1,5 +1,8 @@
 (ns figtest.core
-    (:require [rum.core :as rum]))
+    (:require [rum.core :as rum]
+    		  [figtest.torust3.core :as tttt]
+    		  [figtest.torust3.logic :as logic]
+  			  [figtest.torust3.tests :as tests]))
 
 (enable-console-print!)
 
@@ -16,7 +19,7 @@
    [:h3 "Edit this and watch it change!"]
    [:h4 "heheheh"]])
 
-(rum/mount (hello-world)
+(rum/mount (tttt/selectMode)
            (. js/document (getElementById "app")))
 
 (defn on-js-reload []
