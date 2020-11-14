@@ -7,13 +7,14 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defonce app-state (atom {:text "Get Fuc!"}))
 
 
 (rum/defc hello-world []
   [:div
    [:h1 (:text @app-state)]
-   [:h3 "Edit this and watch it change!"]])
+   [:h3 "Edit this and watch it change!"]
+   [:h4 "heheheh"]])
 
 (rum/mount (hello-world)
            (. js/document (getElementById "app")))
