@@ -1,8 +1,8 @@
-(ns figtest.torust3.core
+(ns make100.torust3.core
   (:require
   			[rum.core :as rum]
-  			[figtest.torust3.logic :as logic]
-  			[figtest.torust3.tests :as tests]
+  			[make100.torust3.logic :as logic]
+  			[make100.torust3.tests :as tests]
   			[cljs.core.match :refer-macros [match]]))
 
 
@@ -25,7 +25,7 @@
 
 ;(def viewMap {:torus torusBoardView :bounded boundedBoardView})
 
-(def type->n {:torus [3 3] :bounded [1 1]})
+(def type->n {:torus [8 8] :bounded [1 1]})
 
 (defn swapPlayers [icon]
 	(case icon

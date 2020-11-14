@@ -1,4 +1,4 @@
-(ns figtest.torust3.logic
+(ns make100.torust3.logic
 	(:require [cljs.core.match :refer-macros [match]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,12 +1,12 @@
-(ns figtest.core
+(ns make100.core
     (:require [rum.core :as rum]
-    		  [figtest.torust3.core :as tttt]
-    		  [figtest.torust3.logic :as logic]
-  			  [figtest.torust3.tests :as tests]))
+    		  [make100.torust3.core :as tttt]
+    		  [make100.torust3.logic :as logic]
+  			  [make100.torust3.tests :as tests]))
 
 (enable-console-print!)
 
-(println "This text is printed from src/figtest/core.cljs. Go ahead and edit it and see reloading in action.")
+(println "This text is printed from src/make100/core.cljs. Go ahead and edit it and see reloading in action.")
 
 ;; define your app data so that it doesn't get over-written on reload
 

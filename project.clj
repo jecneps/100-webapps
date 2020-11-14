@@ -1,4 +1,4 @@
-(defproject figtest "0.1.0-SNAPSHOT"
+(defproject make100 "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -24,14 +24,14 @@
                 ;; The presence of a :figwheel configuration here
                 ;; will cause figwheel to inject the figwheel client
                 ;; into your build
-                :figwheel {:on-jsload "figtest.core/on-js-reload"
+                :figwheel {:on-jsload "make100.core/on-js-reload"
                            ;; :open-urls will pop open your application
                            ;; in the default browser once Figwheel has
                            ;; started and compiled your application.
                            ;; Comment this out once it no longer serves you.
                            :open-urls ["http://localhost:3449/index.html"]}
 
-                :compiler {:main figtest.core
+                :compiler {:main make100.core
                            :target :bundle
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/out/index.js"
@@ -47,8 +47,8 @@
                ;; lein cljsbuild once min
                {:id "min"
                 :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/figtest.js"
-                           :main figtest.core
+                :compiler {:output-to "resources/public/js/compiled/make100.js"
+                           :main make100.core
                            :optimizations :advanced
                            :pretty-print false}}]}
 

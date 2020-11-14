@@ -1,6 +1,6 @@
-(ns figtest.torust3.tests
+(ns make100.torust3.tests
   (:require [cljs.test :refer-macros [deftest is testing run-tests]]
-  			[figtest.torust3.logic :as logic]))
+  			[make100.torust3.logic :as logic]))
 
 (def testboard1 (logic/convertIcons->cells [[:X :empty :O]
 									 		[:O :X :O]
