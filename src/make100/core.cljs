@@ -6,24 +6,52 @@
 
 (enable-console-print!)
 
-(println "This text is printed from src/make100/core.cljs. Go ahead and edit it and see reloading in action.")
+;;#########################################
+(defn splitUrl []
+  (clojure.string/split 
+    (.. js/window -location -href)
+    #"#"))
 
-;; define your app data so that it doesn't get over-written on reload
+(defn getRoute []
+  (if-let [r (second (splitUrl))]
+    r
+    "home"))
 
-(defonce app-state (atom {:text "Get Fuc!"}))
+(defn getBaseUrl []
+  (first (splitUrl)))
 
+(defn path->hash [path]
+  (str (getBaseUrl) "#" path))
 
-(rum/defc hello-world []
+;;#########################################
+;; HOME
+;;#########################################
+
+(rum/defc home []
   [:div
-   [:h1 (:text @app-state)]
-   [:h3 "Edit this and watch it change!"]
-   [:h4 "heheheh"]])
+    [:h1 "Welcome to Make100 Webapps!"]
+    [:a {:href (path->hash "torustictactoe")} "Click for torus tic tac toe"]])
 
-(rum/mount (tttt/selectMode)
-           (. js/document (getElementById "app")))
+;;#########################################
+;; ROUTING CODE
+;;#########################################
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+(def routeMap {
+  "home" home
+  "torustictactoe" tttt/selectMode
+  })
+
+;;#########################################
+
+
+
+(defn handleHash []
+  (rum/mount ((routeMap (getRoute)))
+           (. js/document (getElementById "app"))))
+
+(. js/window addEventListener "hashchange" handleHash false)
+
+;;#########################################
+
+
+(handleHash)

@@ -8,9 +8,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(println (.. js/window -location -href))
 
-
-(tests/testAll)
+;(tests/testAll)
 
 (def root (.getElementById js/document "app"))
 
