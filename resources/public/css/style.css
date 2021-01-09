@@ -79,3 +79,7 @@ button {
 	align-items: center;
 }/* some style */
 
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
