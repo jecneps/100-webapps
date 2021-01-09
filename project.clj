@@ -50,7 +50,7 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/make100.js"
                            :main make100.core
-                           :optimizations :advanced
+                           :optimizations :none
                            :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
