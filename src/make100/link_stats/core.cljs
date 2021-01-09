@@ -72,6 +72,7 @@
 (defn loadData [blog response]
 	(let [posts (cljs.reader/read-string response)
 		  state @linkStatState]
+		  (println "in load data")
 		 (as-> (assoc-in state [:blogs blog] posts) $
 		 	  (assoc $ :data-loaded true)
 		 	  (reset! linkStatState $))))
@@ -201,6 +202,7 @@
 				(doall
 					(if (not (:data-loaded @linkStatState))
 						(map (fn [[name path]]
+								(println "about to make GET")
 								(GET path {:handler (partial loadData name)}))
 							PATH_MAP)))
 				state)}
