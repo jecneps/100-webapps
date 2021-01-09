@@ -1,6 +1,16 @@
 (ns make100.link-stats.core
 	(:require [rum.core :as rum]
-			  [ajax.core :refer [GET]]))
+			  [ajax.core :refer [GET]]
+			  [cljs.reader :as reader]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn splitUrl []
+  (clojure.string/split 
+    (.. js/window -location -href)
+    #"#"))
+
+(defn getBaseUrl []
+	(first (splitUrl)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (def linkStatState (atom
@@ -51,9 +61,6 @@
 					  		(reset! linkStatState (assoc @linkStatState :host nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
 (def PATH_MAP {
 	"Samzdat" "/data/blogData/Samzdat.clj"
 	;"The Last Psychiatrist" "/data/blogData/Tlp.clj"
@@ -65,14 +72,14 @@
 
 
 (defn dataHandler [response]
-	(->> (cljs.reader/read-string response)
+	(->> (reader/read-string response)
 		 (map :title)
 		 (take 10)))
 
 ;(GET SAMZDAT_PATH {:handler dataHandler})
 
 (defn loadData [blog response]
-	(let [posts (cljs.reader/read-string response)
+	(let [posts (reader/read-string response)
 		  state @linkStatState]
 		  (println "in load data")
 		 (as-> (assoc-in state [:blogs blog] posts) $

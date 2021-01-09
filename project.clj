@@ -14,7 +14,7 @@
                  [cljs-ajax "0.7.5"]]
 
   :plugins [[lein-figwheel "0.5.20"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.7"]]
 
   :source-paths ["src"]
 
