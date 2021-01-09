@@ -20,6 +20,8 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn error-handler [{:keys [status status-text]}]
+  (.log js/console (str "something bad happened: " status " " status-text)))
 
 (def eventHandlingMap (atom {}))
 
@@ -203,7 +205,7 @@
 					(if (not (:data-loaded @linkStatState))
 						(map (fn [[name path]]
 								(println "about to make GET")
-								(GET path {:handler (partial loadData name)}))
+								(GET path {:handler (partial loadData name) :error-handler error-handler}))
 							PATH_MAP)))
 				state)}
 	[]
