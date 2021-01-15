@@ -83,3 +83,56 @@ button {
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
+.tree {
+	position: relative;
+}
+
+.node {
+	position: relative;
+	padding: 0 5px;
+}
+
+/*Adding line above children*/
+.tree .node::before, .tree .node::after{
+	content: '';
+	position: absolute; bottom: 100%; right: 50%;
+	border-top: 2px solid #ccc;
+	width: 50%; height: 20px;
+}
+
+/*line from a child up*/
+.tree .node::after{
+	right: auto; left: 50%;
+	border-left: 2px solid #ccc;
+}
+
+.tree > .node::before {
+	border: 0 none !important;
+}
+
+/*Get's rid of ends of sibling line*/
+.tree .node:first-child::before, .tree .node:last-child::after{
+	border: 0 none;
+}
+
+/*Adding back the vertical connector to the last nodes*/
+.tree .node:last-child::before{
+	border-right: 2px solid #ccc;
+}
+
+
+
+
+.tree .container {
+	margin-bottom: 20px;
+}
+
+/* Lines from parent downwards*/
+.tree .container.inner::after {
+	content: '';
+	position: relative; top: 0; left: 50%;
+	border-left: 2px solid #ccc;
+	width: 0; height:10px;
+	
+}

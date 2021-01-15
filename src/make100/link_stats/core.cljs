@@ -1,7 +1,7 @@
 (ns make100.link-stats.core
 	(:require [rum.core :as rum]
 			  [ajax.core :refer [GET]]
-			  [cljs.reader :as reader]))
+			  [cljs.reader]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn splitUrl []
@@ -72,14 +72,14 @@
 
 
 (defn dataHandler [response]
-	(->> (reader/read-string response)
+	(->> (cljs.reader/read-string response)
 		 (map :title)
 		 (take 10)))
 
 ;(GET SAMZDAT_PATH {:handler dataHandler})
 
 (defn loadData [blog response]
-	(let [posts (reader/read-string response)
+	(let [posts (cljs.reader/read-string response)
 		  state @linkStatState]
 		  (println "in load data")
 		 (as-> (assoc-in state [:blogs blog] posts) $
