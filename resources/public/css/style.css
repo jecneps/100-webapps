@@ -1,5 +1,6 @@
 :root {
 	--orange: #FF6300;
+	--green: #28E42A;
 }
 
 html, body {
@@ -7,12 +8,13 @@ html, body {
 }
 
 #app {
-	height: 100%;
-	width: 100%;
+	height: fit-content;
+	width: fit-content;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	margin: auto;
 }
 
 button {
@@ -97,14 +99,14 @@ button {
 .tree .node::before, .tree .node::after{
 	content: '';
 	position: absolute; bottom: 100%; right: 50%;
-	border-top: 2px solid #ccc;
-	width: 50%; height: 20px;
+	border-top: 4px solid #009cff;
+	width: 50%; height: 50px;
 }
 
 /*line from a child up*/
 .tree .node::after{
 	right: auto; left: 50%;
-	border-left: 2px solid #ccc;
+	border-left: 4px solid #009cff;
 }
 
 .tree > .node::before {
@@ -118,21 +120,99 @@ button {
 
 /*Adding back the vertical connector to the last nodes*/
 .tree .node:last-child::before{
-	border-right: 2px solid #ccc;
+	border-right: 4px solid #009cff;
 }
 
 
-
+.tree .inner {
+	position: relative;
+}
 
 .tree .container {
-	margin-bottom: 20px;
+	padding-bottom: 80px;
 }
 
 /* Lines from parent downwards*/
-.tree .container.inner::after {
-	content: '';
-	position: relative; top: 0; left: 50%;
-	border-left: 2px solid #ccc;
-	width: 0; height:10px;
-	
+
+
+/*######################*/
+.disabledBar {
+	opacity: 50%;
+}
+
+/*#########################*/
+
+.graphNode {
+	width:50px;
+	height:50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 27px;
+	background-color: var(--orange);
+	margin: 0px 20px;
+}
+
+.arrowHead {
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid black
+}
+
+.arrowBody {
+	width: 0px;
+	height: 40px;
+	border: 1px solid black;
+
+}
+
+/*#######################3*/
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+td:last-child {
+	border-left: 1px solid green !important;
+}
+
+.demoGraph:hover {
+	opacity: 50%;
+}
+
+.QMark {
+	width: 200px;
+	height: 200px;
+	margin: 50px 0;
+	background-color: grey;
+	font-size: 10rem;
+	text-align: center;
+}
+
+.nonTree {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.gButton:hover {
+	background-color: var(--orange);
+}
+
+/*#######################3*/
+
+.dataBar {
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
+}
+
+.dataBar:first-child {
+	border-bottom: 1px solid white;
+}
+
+.dataBar:last-child {
+	border-top: 1px solid white;
 }

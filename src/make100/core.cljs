@@ -19,7 +19,7 @@
 
 (defn getBaseUrl []
   (first (splitUrl)))
-
+  
 (defn path->hash [path]
   (str (getBaseUrl) "#" path))
 
