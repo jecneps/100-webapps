@@ -38,20 +38,22 @@
 ;; ROUTING CODE
 ;;#########################################
 
-(def routeMap {
-  "home" home
-  "torustictactoe" tttt/selectMode
-  "linkstats" ls/link-stats-page
-  "gpm" gpm/gpmView
-  })
+(def routeMap (let [app (. js/document getElementById "app")]
+  {
+  "home" {:view home :trg app}
+  "torustictactoe" {:view tttt/selectMode :trg app}
+  "linkstats" {:view ls/link-stats-page :trg app}
+  "gpm" {:view gpm/gpmView :trg (. js/document -body)}
+  }))
 
 ;;#########################################
 
 (println (type getRoute))
 
 (defn handleHash []
-  (rum/mount ((routeMap (getRoute)))
-           (. js/document getElementById "app")))
+  (let [m (routeMap (getRoute))]
+    (rum/mount ((:view m))
+               (:trg m))))
 
 (. js/window addEventListener "hashchange" handleHash false)
 

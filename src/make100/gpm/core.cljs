@@ -490,7 +490,7 @@
 ;;################################################################################################################
 
 (rum/defc instructions []
-	[:div {:style {:width "400px"}}
+	[:div {:style {:width "800px"}}
 		[:p "This mini-game is designed to help you build an intuition for simple " 
 			[:a {:href "https://en.wikipedia.org/wiki/Bayesian_network"}  "causal models"] 
 			"."]
@@ -510,7 +510,7 @@
 				(sendEvent :restart)
 				s)}
 	[]
-	[:div ;{:style {:width "100%" }}
+	[:div {:style {:width "fit-content" :height "fit-content" :margin "auto"}}
 
 		[:div.nonTree
 

@@ -126,7 +126,7 @@
 	[data] 
 	(let [step (calculateStep (second (first data))
 							  (:width (rum/react linkStatState)))]
-		[:div {:class "flex"}
+		[:div {:style  {:display "flex"}}
 			[:div {:id "names"}
 					(map (fn [host] 
 							[:div {:style {:border "grey 1px solid" 
