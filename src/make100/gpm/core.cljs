@@ -24,6 +24,19 @@
 (defn remove-index [v i]
 	(into (subvec v 0 i) (subvec v (inc i) (count v))))
 
+(defn probCycle [r i]
+	(-> (* r 10)
+		(+ i)
+		(mod 10)
+		(/ 10)))
+
+(defn probCompliment [r]
+	(println r)
+	(println (probCycle r 5))
+	(probCycle r 5))
+
+
+
 
 ;;################################################################################################################
 ;;  PROBABILITY LOGIC
@@ -60,43 +73,51 @@
 ;;#############################
 
 (defn newChain []
+	(println "newchain")
 	{"A" {:trigger {#{} (rand)}
 		  :needs #{}
 		  :next #{"B"}}
-	 "B" {:trigger {#{["A" true]} (rand)
-	 				#{["A" false]} (rand)}
+	 "B" {:trigger (let [r (rand)]
+	 					{#{["A" true]} r
+	 	 				 #{["A" false]} (probCompliment r)})
 	 	  :needs #{"A"}
 	 	  :next #{"C"}}
-	 "C" {:trigger {#{["B" true]} (rand)
-	 			 	#{["B" false]} (rand)}
+	 "C" {:trigger (let [r (rand)]
+	 					{#{["B" true]} r
+	 	 			 	 #{["B" false]} (probCompliment r)})
 	 	  :needs #{"B"}
 	 	  :next #{}}
 	 :roots #{"A"}
 	 :type :chain})
 
 (defn newFork []
-	{"A" {:trigger {#{["B" true]} (rand)
-	 				#{["B" false]} (rand)}
+	(println "newF")
+	{"A" {:trigger (let [r (rand)]
+	 					{#{["B" true]} r
+	 	 			 	 #{["B" false]} (probCompliment r)})
 		  :needs #{"B"}
 		  :next #{}}
 	 "B" {:trigger {#{} (rand)}
 	 	  :needs #{}
 	 	  :next #{"C" "A"}}
-	 "C" {:trigger {#{["B" true]} (rand)
-	 			 	#{["B" false]} (rand)}
+	 "C" {:trigger (let [r (rand)]
+	 					{#{["B" true]} r
+	 	 			 	 #{["B" false]} (probCompliment r)})
 	 	  :needs #{"B"}
 	 	  :next #{}}
 	 :roots #{"B"}
 	 :type :fork})
 
 (defn newCollider []
+	(println "newC")
 	{"A" {:trigger {#{} (rand)}
 		  :needs #{}
 		  :next #{"B"}}
-	 "B" {:trigger {#{["A" true] ["C" true]} (rand)
-	 				#{["A" true] ["C" false]} (rand)
-	 			    #{["A" false] ["C" true]} (rand)
-	 			    #{["A" false] ["C" false]} (rand)}
+	 "B" {:trigger (let [r (rand)]
+	 					{#{["A" true] ["C" true]} r
+	 	 				 #{["A" true] ["C" false]} (probCycle r 2.5)
+	 	 			     #{["A" false] ["C" true]} (probCycle r 2.5)
+	 	 			     #{["A" false] ["C" false]} (probCompliment r)})
 	 	  :needs #{"C" "A"}
 	 	  :next #{}}
 	 "C" {:trigger {#{} (rand)}
@@ -186,7 +207,7 @@
 		 			 :children [{:node 1}]}]})
 
 (def INIT_TREE
-	{:node {:sample (graph->sample (newChain) 50)
+	{:node {:sample (graph->sample (newChain) 100)
 			:sampleId []
 			:selectedLabels {}}})
 
@@ -275,7 +296,7 @@
 	(let [state @globalState
 		  model (randomGraph)]
 		(as-> (assoc state :hiddenModel model) $
-			  (assoc $ :sampleTree (newTree (graph->sample model 50)))
+			  (assoc $ :sampleTree (newTree (graph->sample model 100)))
 			  (assoc $ :guessed? nil)
 			  (reset! globalState $))))
 
@@ -336,7 +357,7 @@
 			 point)])
 
 (rum/defc dataBlock [sample]
-	[:div {:style {:display "flex" :flex-wrap "wrap" :border "black" "2px" "solid" :width "300px"}}
+	[:div {:style {:display "flex" :flex-wrap "wrap" :border "black" "2px" "solid" :width "500px"}}
 		(map dataPoint (:data sample))])
 
 (rum/defc samplePen [{sample :sample sampleId :sampleId selectedLabels :selectedLabels :as s}]
@@ -496,7 +517,7 @@
 			"."]
 		[:p (str "There are three binary random variables, A B and C. Each \"round\" a random graph will be selected to represent the causal "
 			     "relationship between the three variables. Click on the model that you think generated the data and see if you were right!")]
-		[:p (str "The secretly chosen graph is used to generate a 50 data samples, shown below. Each square represents a sample, with each horizontal "
+		[:p (str "The secretly chosen graph is used to generate a 100 data samples, shown below. Each square represents a sample, with each horizontal "
 			     "bar representing a binary value for a variable (red for false, green for true). Next to each sample is a sidebar that tells "
 			     "you overall, how often did a given variable turn out true? Click on the bar to condition on that variable.")]
 		[:p (str "By snooping around and exploring how the ratios change based on what variables you condition on, you should be "
