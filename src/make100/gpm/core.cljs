@@ -312,6 +312,7 @@
 								   :padding "2px 0"
 								   :display "flex"
 								   :justify-content "center"
+								   :cursor "pointer"
 								   :width n}
 				:on-click click
 				:class class}
