@@ -31,8 +31,6 @@
 		(/ 10)))
 
 (defn probCompliment [r]
-	(println r)
-	(println (probCycle r 5))
 	(probCycle r 5))
 
 
@@ -73,7 +71,6 @@
 ;;#############################
 
 (defn newChain []
-	(println "newchain")
 	{"A" {:trigger {#{} (rand)}
 		  :needs #{}
 		  :next #{"B"}}
@@ -91,7 +88,6 @@
 	 :type :chain})
 
 (defn newFork []
-	(println "newF")
 	{"A" {:trigger (let [r (rand)]
 	 					{#{["B" true]} r
 	 	 			 	 #{["B" false]} (probCompliment r)})
@@ -109,7 +105,6 @@
 	 :type :fork})
 
 (defn newCollider []
-	(println "newC")
 	{"A" {:trigger {#{} (rand)}
 		  :needs #{}
 		  :next #{"B"}}
