@@ -9,6 +9,7 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.773"]
                  [org.clojure/core.async  "0.4.500"]
+                 [org.clojure/math.combinatorics "0.1.6"]
                  [rum "0.11.5"]
                  [org.clojure/core.match "1.0.0"]
                  [cljs-ajax "0.7.5"]]

@@ -2,5 +2,10 @@
   "devDependencies": {
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "js-combinatorics": "^1.4.5",
+    "moment": "^2.29.1",
+    "normal-distribution": "0.0.9"
   }
 }

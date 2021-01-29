@@ -2,7 +2,8 @@
     (:require [rum.core :as rum]
       		    [make100.torust3.core :as tttt]
               [make100.link-stats.core :as ls]
-              [make100.gpm.core :as gpm]))
+              [make100.gpm.core :as gpm]
+              [make100.evosim.core :as evo]))
 
 (enable-console-print!)
 
@@ -32,7 +33,8 @@
     [:h1 "Welcome to Make100 Webapps!"]
     [:a {:href (path->hash "torustictactoe")} "Click for torus tic tac toe"]
     [:a {:href (path->hash "linkstats")} "Click for Blog Link Stats"]
-    [:a {:href (path->hash "gpm")} "Click for Graphical Probabalistic Models"]])
+    [:a {:href (path->hash "gpm")} "Click for Graphical Probabalistic Models"]
+    [:a {:href (path->hash "evo")} "Click for Evolution Simulator"]])
 
 ;;#########################################
 ;; ROUTING CODE
@@ -44,6 +46,7 @@
   "torustictactoe" {:view tttt/selectMode :trg app}
   "linkstats" {:view ls/link-stats-page :trg app}
   "gpm" {:view gpm/gpmView :trg (. js/document -body)}
+  "evo" {:view evo/topLevel :trg app}
   }))
 
 ;;#########################################
