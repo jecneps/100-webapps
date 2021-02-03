@@ -104,5 +104,19 @@
 						(is (= true (almost-equal want (logic/integrate (partial logic/truncated-normal a b n sd) a b step) epsilon))))
 				 cases))))
 
+(deftest testHclRgbInt
+	(let [cases [{:in 	[50 1 0.5]
+				  :want [255 213 0]}
+				 {:in [300 0.1 0.5]
+				  :want [140 115 140]}
+				 {:in [200 0.5 0.8]
+				  :want [179 213 230]}
+				 {:in [100 0.8 0.5]
+				  :want [93 230 25]}]]
+		(doall
+			(map (fn [{in :in rgb :want}]
+					(is (= rgb (logic/hsl->rgbInt in))))
+				 cases))))
+
 (defn testAll []
 	(run-tests))
