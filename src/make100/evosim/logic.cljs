@@ -34,6 +34,18 @@
 ;; COLOR
 ;;#########################################
 
+(defn deg->rad [deg]
+	(* deg (/ (* 2 (. js/Math -PI)) 360)))
+
+(defn rad->deg [rad]
+	(* rad (/ 360 (* 2 (. js/Math -PI)))))
+
+(defn polar->cart [[r theta]]
+	[(* r (. js/Math cos theta)) (* r (. js/Math sin theta))])
+
+(defn cart->polar [[x y]]
+	[(. js/Math sqrt (+ (* x x) (* y y))) (. js/Math atan (/ y x))])
+
 ; h in [0-360]
 ; s in [0-1]
 ; l in [0-1]
@@ -63,6 +75,11 @@
 	(->> (hsl->rgb v)
 		 (map #(* % 255))
 		 (map (. js/Math -round))))
+
+(defn rgbInt->str [[r g b]]
+	(str "rgb(" r ", " g ", " b ")"))
+
+(def hsl->str (comp rgbInt->str hsl->rgbInt))
 
 
 
