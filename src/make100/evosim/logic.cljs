@@ -175,10 +175,40 @@
 ;;#######################################################
 ;; SIMULATION LOGIC
 ;;#######################################################
+;CONVENTIONS use pop for flat array of num, bin for map 
 
-(defn replicateVal [x sf] 
-	(as-> (sf) $
+(defn pop->bin [pop width]
+	(group-by #(* width (quot % width)) pop))
+
+(defn pop->freq [pop width]
+	(->> (pop->bin pop width)
+		 (map (fn [[deg pop]] [deg (count pop)]))
+		 (into {})))
+
+(defn normalize-freq [freq N]
+	(let [curN (apply + (vals freq))]
+		(->> (map (fn [[deg cnt]] [deg (* (/ cnt curN) N)]) freq)
+			 (into {}))))
+
+; pop = {k1 [] k2[] ...}
+; gen = prop
+; fitness
+
+; dist gives 0-1 val
+(defn mutate-with-prob [dist x] 
+	(as-> (dist) $
 	      (* 360 $)
 	      (- $ 180)
-	      (- x $)
+	      (+ x $)
 	      (mod $ 360)))
+
+(defn fitness-from-prob [dist scale x]
+	(* scale (dist x)))
+
+(defn next-generation [freq mutate fitness width]
+	(let [N (apply + (vals freq))]
+		(as-> freq $
+			  (map (fn [[deg cnt]] (repeatedly (* cnt (fitness deg)) #(mutate deg))) $)
+			  (flatten $)
+			  (pop->freq $ width)
+			  (normalize-freq $ N))))

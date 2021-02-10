@@ -4,6 +4,15 @@
 			  [make100.evosim.test :as test]
 			  [make100.evosim.logic :as logic]))
 
+;; {0 n 1 n1 2 n2...}
+(defn dummy-pop [width]
+	(reduce (fn [acc n]
+				(assoc acc (quot n width) (* 400 (rand)))) 
+			{} 
+			(range 0 360 width)))
+
+;#############################################;
+
 (test/testAll)
 
 (defn canvas-update[state]
@@ -71,42 +80,33 @@
 		 	 (range 0 360 thetaStep))))
 
 ; data [0 306 180...]
-(defn fill-hue-graph [cx cy rMin thetaW data ctx canvas]
-	(let [binned (reduce (fn [acc x]
-							(assoc acc 
-								   (quot x thetaW) 
-								   (conj (get acc (quot x thetaW) []) x))) 
-						 {} 
-						 data)
-		  flip (fn [y] (- (. canvas -height) y))]
-		(set! (. ctx -strokeStyle) "#ff6300")
-		
-		(doall
-			(map (fn [[n pop]]
-					(set! (. ctx -fillStyle) (logic/hsl->str [(* n thetaW) 1 0.5]))
-			  		(. ctx beginPath)
-			  		(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
-			  			(. ctx moveTo (+ cx x) (+ cy y)))
-		  			(. ctx arc cx cy rMin (logic/deg->rad (* n thetaW)) (logic/deg->rad (* (inc n) thetaW)))
-		  			(let [[x y] (logic/polar->cart [(+ rMin (count pop)) (logic/deg->rad (* (inc n) thetaW))])]
-			  			(. ctx lineTo (+ cx x) (+ cy y)))
-		  			(. ctx arc cx cy (+ rMin (count pop)) (logic/deg->rad (* (inc n) thetaW)) (logic/deg->rad (* n thetaW)) true)
-		  			(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
-			  			(. ctx lineTo (+ cx x) (+ cy y)))
-		  			(. ctx fill))
-				 binned))))
+(defn fill-hue-graph [cx cy rMin thetaW pop ctx canvas]
+	(doall
+		(map (fn [[n popCnt]]
+				(set! (. ctx -fillStyle) (logic/hsl->str [(* n thetaW) 1 0.5]))
+		  		(. ctx beginPath)
+		  		(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
+		  			(. ctx moveTo (+ cx x) (+ cy y)))
+	  			(. ctx arc cx cy rMin (logic/deg->rad (* n thetaW)) (logic/deg->rad (* (inc n) thetaW)))
+	  			(let [[x y] (logic/polar->cart [(+ rMin popCnt) (logic/deg->rad (* (inc n) thetaW))])]
+		  			(. ctx lineTo (+ cx x) (+ cy y)))
+	  			(. ctx arc cx cy (+ rMin popCnt) (logic/deg->rad (* (inc n) thetaW)) (logic/deg->rad (* n thetaW)) true)
+	  			(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
+		  			(. ctx lineTo (+ cx x) (+ cy y)))
+	  			(. ctx fill))
+			 pop)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rum/defc hue-graph [data]
 	(canvasElem "hue-graph" 
-				1000 
-				1000
-				(let [cx 500 cy 500 rStep 50 rMax 500 thetaSetp 60 thetaW 30 rMin 100]
-					(do-with-args
-						clear
-						(partial polar-graph-axis cx cy rStep rMax thetaSetp "#000000")
-						(partial fill-hue-graph cx cy rMin thetaW data)))))
+		1000 
+		1000
+		(let [cx 500 cy 500 rStep 50 rMax 500 thetaSetp 60 thetaW 10 rMin 100]
+			(do-with-args
+				clear
+				(partial polar-graph-axis cx cy rStep rMax thetaSetp "#000000")
+				(partial fill-hue-graph cx cy rMin thetaW data)))))
 
 
 
@@ -156,8 +156,19 @@
 	  		  :value @(::ctrl state) 
 	  		  :on-input (fn [e] (reset! (::ctrl state) (.. e -target -value)))}]])
 
+(rum/defcs simulation <
+	(rum/local 0 ::time)
+	(rum/local true ::paused?)
+	(rum/local (logic/pop->freq (repeatedly 100 #(* 360 (rand))) 30) ::freq)
+	[state]
+	[:div 
+		(if @(::paused? state)
+			[:button {:on-click #(reset! (::paused? state) false)} "Play"]
+			[:button {:on-click #(reset! (::paused? state) true)} "Pause"])
+		(hue-graph @(::freq state))])
+
 
 
 
 (rum/defc topLevel []
-	(hue-graph (repeatedly 3500 (fn [] (* 360 (rand))))))
+	(hue-graph (dummy-pop 10)))
