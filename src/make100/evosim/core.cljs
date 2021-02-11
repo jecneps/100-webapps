@@ -6,9 +6,9 @@
 
 ;; {0 n 1 n1 2 n2...}
 (defn dummy-pop [width]
-	(reduce (fn [acc n]
-				(assoc acc (quot n width) (* 400 (rand)))) 
-			{} 
+	(reduce (fn [acc x]
+				(assoc acc x (* 360 (rand))))
+			{}
 			(range 0 360 width)))
 
 ;#############################################;
@@ -80,33 +80,34 @@
 		 	 (range 0 360 thetaStep))))
 
 ; data [0 306 180...]
-(defn fill-hue-graph [cx cy rMin thetaW pop ctx canvas]
-	(doall
-		(map (fn [[n popCnt]]
-				(set! (. ctx -fillStyle) (logic/hsl->str [(* n thetaW) 1 0.5]))
-		  		(. ctx beginPath)
-		  		(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
-		  			(. ctx moveTo (+ cx x) (+ cy y)))
-	  			(. ctx arc cx cy rMin (logic/deg->rad (* n thetaW)) (logic/deg->rad (* (inc n) thetaW)))
-	  			(let [[x y] (logic/polar->cart [(+ rMin popCnt) (logic/deg->rad (* (inc n) thetaW))])]
-		  			(. ctx lineTo (+ cx x) (+ cy y)))
-	  			(. ctx arc cx cy (+ rMin popCnt) (logic/deg->rad (* (inc n) thetaW)) (logic/deg->rad (* n thetaW)) true)
-	  			(let [[x y] (logic/polar->cart [rMin (logic/deg->rad (* n thetaW))])]
-		  			(. ctx lineTo (+ cx x) (+ cy y)))
-	  			(. ctx fill))
-			 pop)))
+(defn fill-hue-graph [cx cy rMin rMax thetaW pop popCap ctx canvas]
+	(let [scale #(- (* % (/ rMax popCap)) rMin)]
+		(doall
+			(map (fn [[deg popCnt]]
+					(set! (. ctx -fillStyle) (logic/hsl->str [deg 1 0.5]))
+			  		(. ctx beginPath)
+			  		(let [[x y] (logic/polar->cart [rMin (logic/deg->rad deg)])]
+			  			(. ctx moveTo (+ cx x) (+ cy y)))
+		  			(. ctx arc cx cy rMin (logic/deg->rad deg) (logic/deg->rad (+ deg thetaW)))
+		  			(let [[x y] (logic/polar->cart [(+ rMin (scale popCnt)) (logic/deg->rad (+ deg thetaW))])]
+			  			(. ctx lineTo (+ cx x) (+ cy y)))
+		  			(. ctx arc cx cy (+ rMin (scale popCnt)) (logic/deg->rad (+ deg thetaW)) (logic/deg->rad deg) true)
+		  			(let [[x y] (logic/polar->cart [rMin (logic/deg->rad deg)])]
+			  			(. ctx lineTo (+ cx x) (+ cy y)))
+		  			(. ctx fill))
+				 pop))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(rum/defc hue-graph [data]
+(rum/defc hue-graph [data dataCap]
 	(canvasElem "hue-graph" 
-		1000 
-		1000
-		(let [cx 500 cy 500 rStep 50 rMax 500 thetaSetp 60 thetaW 10 rMin 100]
+		500 
+		500
+		(let [cx 250 cy 250 rStep 25 rMax 250 thetaSetp 60 thetaW 10 rMin 25]
 			(do-with-args
 				clear
 				(partial polar-graph-axis cx cy rStep rMax thetaSetp "#000000")
-				(partial fill-hue-graph cx cy rMin thetaW data)))))
+				(partial fill-hue-graph cx cy rMin rMax thetaW data dataCap)))))
 
 
 
@@ -156,19 +157,42 @@
 	  		  :value @(::ctrl state) 
 	  		  :on-input (fn [e] (reset! (::ctrl state) (.. e -target -value)))}]])
 
-(rum/defcs simulation <
+(rum/defcs simulation-pop <
 	(rum/local 0 ::time)
+	(rum/local nil ::timerId)
 	(rum/local true ::paused?)
-	(rum/local (logic/pop->freq (repeatedly 100 #(* 360 (rand))) 30) ::freq)
-	[state]
-	[:div 
-		(if @(::paused? state)
-			[:button {:on-click #(reset! (::paused? state) false)} "Play"]
-			[:button {:on-click #(reset! (::paused? state) true)} "Pause"])
-		(hue-graph @(::freq state))])
+	(rum/local (dummy-pop 10) ::freq)
+	[state mutate fitness]
+	(let [start (fn [] 
+					(reset! (::paused? state) false)
+					(reset! (::timerId state) 
+							(js/setInterval 
+								(fn [] (reset! (::freq state) (logic/next-generation @(::freq state) mutate fitness 10)))
+								500)))
+		  stop  (fn []
+		  			(reset! (::paused? state) true)
+		  			(js/clearInterval @(::timerId state)))
+		  reset (fn []
+		  			(stop)
+		  			(reset! (::freq state) (dummy-pop 10)))]
+		[:div 
+			(if @(::paused? state)
+				[:button {:on-click start} "Play"]
+				[:button {:on-click stop} "Pause"])
+			[:button {:on-click reset}"Reset"]
+			(hue-graph @(::freq state) 360)]))
+
+(rum/defcs sim-with-controls <
+	(rum/local 0 ::mutationVariance)
+	(rum/local 0 ::fitnessVariance)
+	(rum/local 0 ::fitnessAbsolute)
+	[]
+	())
 
 
 
 
 (rum/defc topLevel []
-	(hue-graph (dummy-pop 10)))
+	(simulation-pop identity #(/ % 360)))
+
+;;TODO scaling didn't work, set's things backwards. Figure out how to put a population cap on drawing the graph.
