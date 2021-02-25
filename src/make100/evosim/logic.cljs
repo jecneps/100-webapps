@@ -150,7 +150,7 @@
 
 (defn sample-tr-norm [a b u sd]
 	(-> (pdf->cdf (partial truncated-normal a b u sd) a)
-		 (sample-from , a b)))
+		(sample-from , a b)))
 
 ;;###############################################
 
@@ -180,15 +180,32 @@
 (defn pop->bin [pop width]
 	(group-by #(* width (quot % width)) pop))
 
+;(defn pop->freq [pop width]
+;	(->> (pop->bin pop width)
+;		 (map (fn [[deg pop]] [deg (count pop)]))
+;		 (into {})))
+
 (defn pop->freq [pop width]
-	(->> (pop->bin pop width)
-		 (map (fn [[deg pop]] [deg (count pop)]))
-		 (into {})))
+	(reduce (fn [acc p]
+				(let [i (* width (quot p width))]
+					(assoc acc i (inc (get acc i 0)))))
+			{}
+			pop))
 
 (defn normalize-freq [freq N]
 	(let [curN (apply + (vals freq))]
 		(->> (map (fn [[deg cnt]] [deg (* (/ cnt curN) N)]) freq)
 			 (into {}))))
+
+;n = number of buckets
+(defn pdf->mutate-vector [pdf n]
+	(let [step (/ 1 n)]
+		(->> (map (fn [i]
+						(let [start (* i step)
+							  end (* (inc i) step)]
+							(integrate pdf start end 30))) 
+			      (range n))
+		  	 (into []))))
 
 ; pop = {k1 [] k2[] ...}
 ; gen = prop
@@ -202,13 +219,21 @@
 	      (+ x $)
 	      (mod $ 360)))
 
-(defn fitness-from-prob [dist scale x]
-	(* scale (dist x)))
-
 (defn next-generation [freq mutate fitness width]
 	(let [N (apply + (vals freq))]
 		(as-> freq $
-			  (map (fn [[deg cnt]] (repeatedly (* cnt (fitness deg)) #(mutate deg))) $)
-			  (flatten $)
+			  (reduce (fn [acc [deg cnt]] 
+			  		  	(into acc (repeatedly (* cnt (fitness deg)) #(mutate deg))))
+			  		  []
+			  		  $)
 			  (pop->freq $ width)
+			  (normalize-freq $ N))))
+
+(defn repl-dyn [freq mutTrans fitness n]
+	(let [N (apply + (vals freq))]
+		(as-> (for [i (range n)]
+				(let [theta (* (/ 360 n) i)]
+					[theta
+					 (* (get freq theta) (fitness theta) (get mutTrans i))])) $
+			  (into {} $)
 			  (normalize-freq $ N))))
