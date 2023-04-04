@@ -1,40 +1,12 @@
-# figtest
+# "Make 100 web apps"
 
-FIXME: Write a one-line description of your library/project.
+Live at [make100apps.com/](https://make100apps.com/)
 
-## Overview
+## 1. Torus Tic-Tac-Toe
+Visualizing a torus tic-tac-toe board as it would look from a 2-d travelers perspective.
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+## 2. Link Stats
+Histograms of internal and external links for two blogs I enjoy.
 
-## Setup
-
-To get an interactive development environment run:
-
-    npm install
-    lein figwheel
-
-and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
-
-    (js/alert "Am I connected?")
-
-and you should see an alert in the browser window.
-
-To clean all compiled files:
-
-    lein clean
-
-To create a production build run:
-
-    lein do clean, cljsbuild once min
-
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
-
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+## 3. Causal Probabalistic Models
+Guess which causal graph generated the data via exploring the conditional probabilities of the data.
